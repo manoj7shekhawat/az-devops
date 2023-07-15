@@ -6,11 +6,11 @@ stages:
       priority: 100
     jobs:
       - job: echo_hello_world
-        displayName: ${{ variables.region_name }} - echo job
+        displayName: $(region_name) - echo job
         steps:
           - script: |
               echo "hello world"
-            displayName: ${{ variables.region_name }} - echo step
+            displayName: $(region_name) - echo step
           - checkout: self
             fetchDepth: 1
       - job: manual_approval
@@ -28,11 +28,11 @@ stages:
               instructions: 'Please verify the build plan and resume'
               onTimeout: 'reject'
       - job: echo_done
-        displayName:  ${{ variables.region_name }} - other echo job
+        displayName:  $(region_name) - other echo job
         dependsOn:
           - manual_approval
           - echo_hello_world
         steps:
           - script: |
               echo "DONE"
-            displayName: ${{ variables.region_name }} - yet another echo step
+            displayName: $(region_name) - yet another echo step
