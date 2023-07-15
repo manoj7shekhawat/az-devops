@@ -6,7 +6,7 @@ stages:
       priority: 100
     jobs:
       - job: echo_hello_world
-        displayName: $(region_name) - echo job
+        displayName: echo job
         steps:
           - script: |
               echo "hello world"
@@ -28,11 +28,11 @@ stages:
               instructions: 'Please verify the build plan and resume'
               onTimeout: 'reject'
       - job: echo_done
-        displayName:  $(region_name) - other echo job
+        displayName:  Other echo job
         dependsOn:
           - manual_approval
           - echo_hello_world
         steps:
           - script: |
               echo "DONE"
-            displayName: $(region_name) - yet another echo step
+            displayName: ${{ variables.region_name }} - yet another echo step
