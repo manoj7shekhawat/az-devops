@@ -1,0 +1,36 @@
+parameters:
+  - name: region1
+    type: boolean
+    default: true
+
+
+trigger:
+  batch: true
+  branches:
+    include:
+      - main
+
+pr: none
+
+lockBehavior: sequential
+
+variables:
+  - name: region_name
+    ${{ if eq(parameters.region1, true) }}:
+      value: 'West Europe'
+    ${{ else }}:
+      value: 'North Europe'
+  - name: pool_name
+    ${{ if eq(parameters.region1, true) }}:
+      value: 'az-devops-vmss-agent-pool'
+    ${{ else }}:
+      value: 'my-vmss-agent-pool'
+
+
+#pool:
+#  name: '$(pool_name)'
+pool:
+  vmImage: ubuntu-latest
+
+extends:
+  template: azure_pipelines_base.yml

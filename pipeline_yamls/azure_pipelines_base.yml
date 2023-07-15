@@ -1,0 +1,38 @@
+stages:
+  - stage: 'BUILD_DEPLOY_ECHO'
+    displayName: ${{ variables.region_name }} - Plan & Apply Bootstrap
+    dependsOn:
+    variables:
+      priority: 100
+    jobs:
+      - job: echo_hello_world
+        displayName: 'echo job'
+        steps:
+          - script: |
+              echo "hello world"
+            displayName: 'echo step'
+          - checkout: self
+            fetchDepth: 1
+      - job: wait_for_validation
+        dependsOn: echo_hello_world
+        displayName: Wait for approval
+        pool: server
+        timeoutInMinutes: 4320 # job times out in 3 days
+        steps:
+          - task: ManualValidation@0
+            displayName: 'Manual Approval'
+            timeoutInMinutes: 1440 # task times out in 1 day
+            inputs:
+              notifyUsers: |
+                manoj7shekhawat@gmail.com
+              instructions: 'Please verify the build plan and resume'
+              onTimeout: 'reject'
+      - job: echo_done
+        displayName: 'Terraform Apply'
+        dependsOn:
+          - wait_for_validation
+          - echo_hello_world
+        steps:
+          - script: |
+              echo "DONE"
+            displayName: 'yet another echo step'
